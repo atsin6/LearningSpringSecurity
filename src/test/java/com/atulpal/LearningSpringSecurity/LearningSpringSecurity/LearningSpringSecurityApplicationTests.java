@@ -1,7 +1,9 @@
 package com.atulpal.LearningSpringSecurity.LearningSpringSecurity;
 
+import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.entities.SessionEntity;
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.entities.User;
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.services.JwtService;
+import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.services.SessionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,9 @@ class LearningSpringSecurityApplicationTests {
 
 	@Autowired
 	private JwtService jwtService;
+
+	@Autowired
+	private SessionService sessionService;
 
 
 	@Test
@@ -24,5 +29,14 @@ class LearningSpringSecurityApplicationTests {
 		System.out.println(id);
 
 	}
+
+//	@Test
+//	void getUserIdFromToken(){
+//		SessionEntity sessionEntity = new SessionEntity(1L, 1L,"Bearer alwjfoaiwo.osdfoijfopijaoseifj.iawjeoifjawefj");
+//		Boolean isExist = sessionService.ifSessionExists(1L);
+//
+//		System.out.println(isExist);
+//	}
+
 
 }

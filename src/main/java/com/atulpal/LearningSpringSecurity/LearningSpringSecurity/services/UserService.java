@@ -23,7 +23,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; //It is inside webSecurityConfig
 
     //we won't be directly using this method spring security is using this
     // to load the user data by calling the userRepository
@@ -36,6 +36,12 @@ public class UserService implements UserDetailsService {
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("user not found with id: " + userId)
+        );
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("user not found with email: " + email)
         );
     }
 

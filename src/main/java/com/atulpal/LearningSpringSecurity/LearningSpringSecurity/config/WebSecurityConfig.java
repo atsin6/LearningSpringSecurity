@@ -1,6 +1,8 @@
 package com.atulpal.LearningSpringSecurity.LearningSpringSecurity.config;
 
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.filters.JwtAuthFilter;
+import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.filters.LoggingFilter;
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,19 +20,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final LoggingFilter loggingFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/posts", "/error", "/auth/**" ).permitAll() // posts route is enabled for everyone
+                        .requestMatchers("/v3/**","/swagger-ui/**","/posts", "/error", "/auth/**" ).permitAll() // posts route is enabled for everyone
 //                        .requestMatchers("/posts/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                // Add the custom logging filter before the authentication filter
+                .addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class);
 //                .formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();

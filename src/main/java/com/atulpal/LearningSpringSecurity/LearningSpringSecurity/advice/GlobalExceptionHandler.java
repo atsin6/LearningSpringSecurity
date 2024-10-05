@@ -48,4 +48,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException exception){
+        ApiError apiError = ApiError.builder()
+                .message(exception.getLocalizedMessage())
+                .statusCode(HttpStatus.CONFLICT)
+                .build();
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
 }

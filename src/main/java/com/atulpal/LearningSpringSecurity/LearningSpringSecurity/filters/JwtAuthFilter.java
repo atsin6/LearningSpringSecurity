@@ -1,8 +1,11 @@
 package com.atulpal.LearningSpringSecurity.LearningSpringSecurity.filters;
 
+import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.entities.SessionEntity;
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.entities.User;
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.services.JwtService;
+import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.services.SessionService;
 import com.atulpal.LearningSpringSecurity.LearningSpringSecurity.services.UserService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +29,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserService userService;
 
+    //HW
+    private final SessionService sessionService;
+
 
     //It is user to pass the exception from 1 context to another context
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver handlerExceptionResolver;
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -48,15 +56,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
             //If requestTokenHeader is not null and starts with "Bearer " then
-
             //extract the token without the "Bearer "
-            // suppose the token is -> "Bearer aohfgioak32oi.roi30oi2q3okjdfpoj.owoeijhr0oqj4i32k"
-            // ["", aohfgioak32oi.roi30oi2q3okjdfpoj.owoeijhr0oqj4i32k]
-            String token = requestTokenHeader.split("Bearer ")[1];
-
-
+            String token = requestTokenHeader.substring(7);
             //Validating and Extracting UserId from the token using JwtService
             Long userId = jwtService.getUserIdFromToken(token);
+
 
 
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -79,5 +83,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }catch (Exception e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
+
     }
+
 }
